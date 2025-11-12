@@ -9,7 +9,9 @@ import {
   ReactNode,
 } from "react";
 import type { User } from "@/lib/types";
-import { getUserById, authenticateUser } from "@/lib/data";
+import { getUserById } from "@/lib/data";
+import { auth } from "@/lib/firebase";
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { Loader2 } from "lucide-react";
 
 interface AuthContextType {
@@ -27,53 +29,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkUser = async () => {
-      // Only run this on the client
-      if (typeof window !== 'undefined') {
-        setLoading(true);
-        try {
-          const userId = localStorage.getItem("userId");
-          if (userId) {
-            const fetchedUser = await getUserById(userId);
-            setUser(fetchedUser || null);
-          }
-        } catch (error) {
-          console.error("Failed to fetch user on initial load:", error);
-          setUser(null);
-          localStorage.removeItem("userId");
-        } finally {
-          setLoading(false);
-        }
+    setLoading(true);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // Optionally fetch user details from Firestore using UID
+        const fetchedUser = await getUserById(firebaseUser.uid);
+        setUser(fetchedUser || null);
       } else {
-         setLoading(false);
+        setUser(null);
       }
-    };
-    checkUser();
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
   const login = async (email: string, password: string): Promise<User | null> => {
     try {
-      const authenticatedUser = await authenticateUser(email, password);
-      if (authenticatedUser) {
-        localStorage.setItem("userId", authenticatedUser.id);
-        setUser(authenticatedUser);
-        return authenticatedUser;
-      }
-      // Ensure user is logged out if auth fails
-      localStorage.removeItem("userId");
-      setUser(null);
-      return null;
+      const credential = await signInWithEmailAndPassword(auth, email, password);
+      const firebaseUser = credential.user;
+      // Optionally fetch user details from Firestore using UID
+      const fetchedUser = await getUserById(firebaseUser.uid);
+      setUser(fetchedUser || null);
+      return fetchedUser || null;
     } catch (error) {
       console.error("Login failed:", error);
-      // Ensure user is logged out in case of error
-      localStorage.removeItem("userId");
       setUser(null);
       return null;
     }
   };
 
   const logout = () => {
-    localStorage.removeItem("userId");
+    signOut(auth);
     setUser(null);
   };
 

@@ -1,8 +1,43 @@
+export const getFilteredFlights = async (from: string, to: string, date?: string): Promise<Flight[]> => {
+        const snapshot = await getDocs(query(flightsCol));
+        return snapshot.docs
+            .map(doc => ({ id: doc.id, ...doc.data() }))
+            .filter(flight => {
+                const f = flight as Flight;
+                return f.depart.toLowerCase().includes(from.toLowerCase()) &&
+                    f.arrive.toLowerCase().includes(to.toLowerCase());
+                // Optionally filter by date if you store it in flight records
+            }) as Flight[];
+};
+export const getFilteredBuses = async (from: string, to: string, date: string): Promise<Bus[]> => {
+        const snapshot = await getDocs(query(busesCol));
+        return snapshot.docs
+            .map(doc => ({ id: doc.id, ...doc.data() }))
+                    .filter(bus => {
+                        const b = bus as Bus;
+                        return b.depart.toLowerCase().includes(from.toLowerCase()) &&
+                            b.arrive.toLowerCase().includes(to.toLowerCase());
+                        // Optionally filter by date if you store it in bus records
+                    }) as Bus[];
+};
+// Bus Functions
+const busesCol = collection(db, "buses");
+export const getAllBuses = async (): Promise<Bus[]> => {
+    const snapshot = await getDocs(busesCol);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Bus[];
+};
+
+// Flight Functions
+const flightsCol = collection(db, "flights");
+export const getAllFlights = async (): Promise<Flight[]> => {
+    const snapshot = await getDocs(flightsCol);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Flight[];
+};
 
 
 import { db } from './firebase';
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, query, where, Timestamp, serverTimestamp, writeBatch, documentId, onSnapshot, deleteDoc, orderBy } from 'firebase/firestore';
-import type { User, Hotel, Room, Booking, NewHotel, NewUser, HotelSearchCriteria, NewRoom, NewBooking, NewReview, Review } from './types';
+import type { User, Hotel, Room, Booking, NewHotel, NewUser, HotelSearchCriteria, NewRoom, NewBooking, NewReview, Review, Flight, Bus } from './types';
 import { differenceInDays, startOfDay } from 'date-fns';
 
 // This file should solely interact with Firestore as the single source of truth.

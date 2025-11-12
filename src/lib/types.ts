@@ -1,3 +1,21 @@
+export type Bus = {
+  id: string;
+  operator: string;
+  depart: string;
+  arrive: string;
+  duration: string;
+  price: string;
+  seats: string;
+};
+export type Flight = {
+  id: string;
+  airline: string;
+  depart: string;
+  arrive: string;
+  duration: string;
+  price: string;
+  stops: string;
+};
 
 
 import { Timestamp } from 'firebase/firestore';

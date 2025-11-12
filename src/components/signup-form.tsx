@@ -18,6 +18,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { createUser } from "@/lib/data";
+import { auth } from "@/lib/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -46,7 +48,17 @@ export function SignupForm() {
 
   const onSubmit = async (data: SignupFormValues) => {
     try {
-      await createUser(data);
+      // Create user in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const firebaseUser = userCredential.user;
+      // Create user in Firestore with role and name
+      await createUser({
+        name: data.name,
+        email: data.email,
+        role: data.role,
+        password: '', // Do not store password in Firestore
+        id: firebaseUser.uid,
+      });
       toast({
         title: "Account Created",
         description: "Your account has been successfully created. Please log in.",
@@ -56,7 +68,7 @@ export function SignupForm() {
       toast({
         variant: "destructive",
         title: "Signup Failed",
-        description: "An account with this email already exists.",
+        description: "An account with this email already exists or there was an error.",
       });
     }
   };

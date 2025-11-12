@@ -1,6 +1,37 @@
+// --- Sample Bus Data ---
+const sampleBusesData = [
+    {
+        operator: 'Sunil Tour and Travels',
+        depart: '21:30 Navi Mumbai',
+        arrive: '07:00 Basti',
+        duration: '09h 30m',
+        price: '₹ 2,210',
+        seats: '8 seats',
+        location: 'Navi Mumbai',
+    },
+    {
+        operator: 'Betrawati Travels',
+        depart: '21:25 Mumbai',
+        arrive: '08:30 Basti',
+        duration: '11h 05m',
+        price: '₹ 3,199',
+        seats: '4 seats',
+        location: 'Mumbai',
+    },
+    {
+        operator: 'Hans Travels',
+        depart: '21:30 Mumbai',
+        arrive: '12:10 Basti',
+        duration: '14h 40m',
+        price: '₹ 3,100',
+        seats: '9 seats',
+        location: 'Mumbai',
+    },
+];
 
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, getDocs, addDoc, serverTimestamp, writeBatch, doc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 import type { NewHotel, NewUser, NewRoom, NewReview } from './types';
 
 
@@ -16,6 +47,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+export const auth = getAuth(app);
 
 // --- Sample Data ---
 const sampleUsersData: NewUser[] = [
@@ -40,7 +72,7 @@ const sampleHotelsData: Omit<NewHotel, 'ownerId' | 'ownerName' | 'ownerEmail' | 
         cancellationPolicy: "Full refund for cancellations made 48 hours in advance.",
         isPetFriendly: true,
         documents: [],
-        status: 'approved',
+    // status: 'approved',
         coverImage: 'https://cf.bstatic.com/static/img/theme-index/bg_luxury/869918c9da63b2c5685fce05965700da5b0e6617.jpg',
         category: 'Premium',
         'data-ai-hint': 'luxury hotel interior'
@@ -59,7 +91,7 @@ const sampleHotelsData: Omit<NewHotel, 'ownerId' | 'ownerName' | 'ownerEmail' | 
         cancellationPolicy: "Full refund for cancellations made 7 days in advance.",
         isPetFriendly: false,
         documents: [],
-        status: 'approved',
+    // status: 'approved',
         coverImage: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/678234743.jpg?k=acee705a06f3347cd2f3d53609a536b772a99eda3603c4eb5ef136e5e6cd6204&o=',
         category: 'Boutique',
         'data-ai-hint': 'santorini hotel'
@@ -78,7 +110,7 @@ const sampleHotelsData: Omit<NewHotel, 'ownerId' | 'ownerName' | 'ownerEmail' | 
         cancellationPolicy: "Flexible cancellation up to 24 hours before check-in.",
         isPetFriendly: false,
         documents: [],
-        status: 'approved',
+    // status: 'approved',
         coverImage: 'https://lux-life.digital/wp-content/uploads/2019/09/turkish-hotel.jpg',
         category: 'Boutique',
         'data-ai-hint': 'modern hotel room'
@@ -97,7 +129,7 @@ const sampleHotelsData: Omit<NewHotel, 'ownerId' | 'ownerName' | 'ownerEmail' | 
         cancellationPolicy: "Cancellation policy requires 14 days notice for a full refund.",
         isPetFriendly: true,
         documents: [],
-        status: 'pending',
+    // status: 'pending',
         coverImage: 'https://images.pexels.com/photos/208333/pexels-photo-208333.jpeg',
         category: 'Boutique',
         'data-ai-hint': 'ski lodge'
@@ -242,6 +274,8 @@ const seedSubcollection = async (
 const seedDatabase = async () => {
     try {
         await seedCollection<NewUser>('users', sampleUsersData, 'email');
+    // Seed Buses
+    await seedCollection('buses', sampleBusesData, 'operator');
 
         const usersSnapshot = await getDocs(collection(db, 'users'));
         const users = usersSnapshot.docs.map(doc => ({ ...doc.data() as NewUser, id: doc.id }));
