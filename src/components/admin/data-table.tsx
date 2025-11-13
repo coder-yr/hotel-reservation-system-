@@ -54,16 +54,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-        <div className="flex items-center py-4">
-            <Input
-            placeholder="Filter by hotel name or location..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => {
-                table.getColumn("name")?.setFilterValue(event.target.value)
-            }}
-            className="max-w-sm"
-            />
-      </div>
+    {/* Remove hardcoded filter input for 'name' column. Filtering is handled in parent component. */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
