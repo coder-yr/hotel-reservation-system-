@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // Optionally fetch user details from Firestore using UID
+        // Fetch user profile from Firestore using UID
         const fetchedUser = await getUserById(firebaseUser.uid);
         setUser(fetchedUser || null);
       } else {
@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const credential = await signInWithEmailAndPassword(auth, email, password);
       const firebaseUser = credential.user;
-      // Optionally fetch user details from Firestore using UID
+      // Fetch user profile from Firestore using UID
       const fetchedUser = await getUserById(firebaseUser.uid);
       setUser(fetchedUser || null);
       return fetchedUser || null;

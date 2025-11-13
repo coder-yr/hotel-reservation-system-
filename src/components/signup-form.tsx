@@ -51,14 +51,13 @@ export function SignupForm() {
       // Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       const firebaseUser = userCredential.user;
-      // Create user in Firestore with role and name
+      // Create user profile in Firestore (no password)
       await createUser({
         name: data.name,
         email: data.email,
         role: data.role,
-        password: '', // Do not store password in Firestore
-        id: firebaseUser.uid,
-      });
+        password: '', // Do not store password
+      }, firebaseUser.uid);
       toast({
         title: "Account Created",
         description: "Your account has been successfully created. Please log in.",

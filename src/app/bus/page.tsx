@@ -19,6 +19,7 @@ export default function BusPage() {
         const busList: BusCardProps[] = querySnapshot.docs.map(doc => {
           const data = doc.data();
           return {
+            id: doc.id,
             operator: data.operator || '',
             busType: data.busType || '',
             departureTime: data.depart || '',
@@ -27,7 +28,7 @@ export default function BusPage() {
             rating: typeof data.rating === 'number' ? data.rating : 4.0,
             reviews: typeof data.reviews === 'number' ? data.reviews : 0,
             price: typeof data.price === 'string' ? parseInt(data.price.replace(/[^\d]/g, '')) : (typeof data.price === 'number' ? data.price : 0),
-            seatsAvailable: typeof data.seats === 'string' ? parseInt(data.seats.replace(/[^\d]/g, '')) : (typeof data.seats === 'number' ? data.seats : 0),
+            seatsAvailable: Array.isArray(data.seats) ? data.seats.filter((s:any) => s.status === 'available').length : (typeof data.seats === 'number' ? data.seats : 0),
             amenities: Array.isArray(data.amenities) ? data.amenities : ['wifi'],
           };
         });
@@ -57,7 +58,7 @@ export default function BusPage() {
               <div>No buses found.</div>
             ) : (
               buses.map((bus, idx) => (
-                <BusCard key={idx} {...bus} />
+                <BusCard key={bus.id || idx} {...bus} />
               ))
             )}
           </section>

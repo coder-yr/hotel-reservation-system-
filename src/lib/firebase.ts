@@ -1,4 +1,32 @@
 // --- Sample Bus Data ---
+const sampleSeats = [
+  { id: 'L1', price: 449, status: 'available', deck: 'lower', row: 1, col: 1 },
+  { id: 'L2', price: 0, status: 'sold', deck: 'lower', row: 2, col: 1 },
+  { id: 'L3', price: 0, status: 'sold', deck: 'lower', row: 3, col: 1 },
+  { id: 'L4', price: 0, status: 'sold', deck: 'lower', row: 4, col: 1 },
+  { id: 'L5', price: 820, status: 'available', deck: 'lower', row: 5, col: 1 },
+  { id: 'L6', price: 0, status: 'sold', deck: 'lower', row: 1, col: 2 },
+  { id: 'L7', price: 0, status: 'sold', deck: 'lower', row: 2, col: 2 },
+  { id: 'L8', price: 799, status: 'available', deck: 'lower', row: 3, col: 2 },
+  { id: 'L9', price: 799, status: 'available', deck: 'lower', row: 4, col: 2 },
+  { id: 'L10', price: 799, status: 'available', deck: 'lower', row: 5, col: 2 },
+  { id: 'U1', price: 729, status: 'available', deck: 'upper', row: 1, col: 1 },
+  { id: 'U2', price: 729, status: 'available', deck: 'upper', row: 1, col: 2 },
+  { id: 'U3', price: 0, status: 'sold', deck: 'upper', row: 2, col: 1 },
+  { id: 'U4', price: 0, status: 'sold', deck: 'upper', row: 2, col: 2 },
+  { id: 'U5', price: 0, status: 'sold', deck: 'upper', row: 3, col: 1 },
+  { id: 'U6', price: 0, status: 'sold', deck: 'upper', row: 3, col: 2 },
+  { id: 'U7', price: 689, status: 'available', deck: 'upper', row: 4, col: 1 },
+  { id: 'U8', price: 0, status: 'sold', deck: 'upper', row: 5, col: 1 },
+  { id: 'U9', price: 0, status: 'sold', deck: 'upper', row: 5, col: 2 },
+  { id: 'U10', price: 1029, status: 'available', deck: 'upper', row: 6, col: 1 },
+  { id: 'U11', price: 729, status: 'available', deck: 'upper', row: 7, col: 1 },
+  { id: 'U12', price: 729, status: 'available', deck: 'upper', row: 7, col: 2 },
+  { id: 'U13', price: 779, status: 'available', deck: 'upper', row: 8, col: 1 },
+  { id: 'U14', price: 0, status: 'sold', deck: 'upper', row: 9, col: 1 },
+  { id: 'U15', price: 0, status: 'sold', deck: 'upper', row: 9, col: 2 },
+];
+
 const sampleBusesData = [
     {
         operator: 'Sunil Tour and Travels',
@@ -6,7 +34,7 @@ const sampleBusesData = [
         arrive: '07:00 Basti',
         duration: '09h 30m',
         price: '₹ 2,210',
-        seats: '8 seats',
+        seats: sampleSeats,
         location: 'Navi Mumbai',
     },
     {
@@ -15,7 +43,7 @@ const sampleBusesData = [
         arrive: '08:30 Basti',
         duration: '11h 05m',
         price: '₹ 3,199',
-        seats: '4 seats',
+        seats: sampleSeats,
         location: 'Mumbai',
     },
     {
@@ -24,7 +52,7 @@ const sampleBusesData = [
         arrive: '12:10 Basti',
         duration: '14h 40m',
         price: '₹ 3,100',
-        seats: '9 seats',
+        seats: sampleSeats,
         location: 'Mumbai',
     },
 ];
@@ -35,7 +63,7 @@ import { getAuth } from 'firebase/auth';
 import type { NewHotel, NewUser, NewRoom, NewReview } from './types';
 
 
-const firebaseConfig = {
+export const firebaseConfig = {
   "projectId": "lodgify-lite-xhtha",
   "appId": "1:720826776932:web:cc195257ff975f49788e71",
   "storageBucket": "lodgify-lite-xhtha.firebasestorage.app",

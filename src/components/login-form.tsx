@@ -64,7 +64,6 @@ export function LoginForm() {
         title: "Login Failed",
         description: "Invalid email or password. Please try again.",
       });
-      // Reset only password field on failure
       form.resetField("password");
     }
   };

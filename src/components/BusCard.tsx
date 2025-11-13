@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Star, Armchair, Wifi, Clock } from "lucide-react";
 
 export interface BusCardProps {
+  id: string;
   operator: string;
   busType: string;
   departureTime: string;
@@ -19,6 +20,7 @@ export interface BusCardProps {
 
 
 export const BusCard = ({
+  id,
   operator,
   busType,
   departureTime,
@@ -97,7 +99,7 @@ export const BusCard = ({
           </div>
 
           <div className="flex flex-col gap-2">
-            <Button className="bg-accent hover:bg-accent/90 text-accent-foreground" onClick={() => router.push('/bus/booking')}>
+            <Button className="bg-accent hover:bg-accent/90 text-accent-foreground" onClick={() => router.push(`/bus/booking/${id}`)}>
               VIEW SEATS
             </Button>
             <p className="text-xs text-center">

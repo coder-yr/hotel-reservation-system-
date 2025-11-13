@@ -36,7 +36,7 @@ export const getAllFlights = async (): Promise<Flight[]> => {
 
 
 import { db } from './firebase';
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, query, where, Timestamp, serverTimestamp, writeBatch, documentId, onSnapshot, deleteDoc, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, query, where, Timestamp, serverTimestamp, writeBatch, documentId, onSnapshot, deleteDoc, orderBy, setDoc } from 'firebase/firestore';
 import type { User, Hotel, Room, Booking, NewHotel, NewUser, HotelSearchCriteria, NewRoom, NewBooking, NewReview, Review, Flight, Bus } from './types';
 import { differenceInDays, startOfDay } from 'date-fns';
 
@@ -89,47 +89,27 @@ export const fromFirestore = <T extends { id: string }>(docSnap: any): T | undef
 
 
 // Auth functions
-export const authenticateUser = async (email: string, password: string): Promise<User | null> => {
-    try {
-        const q = query(usersCol, where("email", "==", email));
-        const querySnapshot = await getDocs(q);
+// No longer needed: authenticateUser. Use Firebase Auth for authentication.
 
-        if (querySnapshot.empty) {
-            console.log("No user found with that email in Firestore.");
-            return null;
+export const createUser = async (userData: NewUser, uid?: string): Promise<User> => {
+        // If UID is provided, use it as Firestore document ID
+        if (uid) {
+            const userRef = doc(usersCol, uid);
+            await setDoc(userRef, { ...userData, createdAt: serverTimestamp() });
+            return {
+                id: uid,
+                ...userData,
+                createdAt: new Date(),
+            };
+        } else {
+            // Fallback for legacy code
+            const newUserDoc = await addDoc(usersCol, { ...userData, createdAt: serverTimestamp() });
+            return {
+                id: newUserDoc.id,
+                ...userData,
+                createdAt: new Date(),
+            };
         }
-        
-        const userDoc = querySnapshot.docs[0];
-        const dbUser = fromFirestore<User>(userDoc);
-
-        if (dbUser && dbUser.password === password) {
-            console.log("Authenticated via Firestore.");
-            return dbUser;
-        }
-        
-        console.log("Password does not match or user data is invalid.");
-        return null;
-    } catch (error) {
-        console.error("Error during Firestore authentication:", error);
-        return null;
-    }
-}
-
-export const createUser = async (userData: NewUser): Promise<User> => {
-    const q = query(usersCol, where("email", "==", userData.email));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-        throw new Error("User with this email already exists");
-    }
-
-    const newUserDoc = await addDoc(usersCol, { ...userData, createdAt: serverTimestamp() });
-
-    return {
-      id: newUserDoc.id,
-      ...userData,
-      createdAt: new Date(),
-    };
 };
 
 export const getUserById = async (id: string): Promise<User | undefined> => {

@@ -1,3 +1,19 @@
+export type Seat = {
+  id: string;
+  price: number;
+  status: string;
+  deck: string;
+  row: number;
+  col: number;
+};
+
+export type BusPoint = {
+  id: string;
+  name: string;
+  time: string; // HH:mm
+  address: string;
+};
+
 export type Bus = {
   id: string;
   operator: string;
@@ -5,7 +21,10 @@ export type Bus = {
   arrive: string;
   duration: string;
   price: string;
-  seats: string;
+  seats: Seat[];
+  amenities?: string[];
+  boardingPoints?: BusPoint[];
+  droppingPoints?: BusPoint[];
 };
 export type Flight = {
   id: string;

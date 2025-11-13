@@ -6,13 +6,17 @@ import { useState } from 'react';
 interface BoardDropPointProps {
   onContinue: () => void;
   selectedSeats: string[];
+  bus?: {
+    boardingPoints?: Array<{ id: string; name: string; time: string; address: string }>;
+    droppingPoints?: Array<{ id: string; name: string; time: string; address: string }>;
+  };
 }
 
-export function BoardDropPoint({ onContinue, selectedSeats }: BoardDropPointProps) {
+export function BoardDropPoint({ onContinue, selectedSeats, bus }: BoardDropPointProps) {
   const [selectedBoarding, setSelectedBoarding] = useState<string>('');
   const [selectedDropping, setSelectedDropping] = useState<string>('');
 
-  const boardingPoints = [
+  const boardingPoints = (bus?.boardingPoints && bus.boardingPoints.length > 0) ? bus.boardingPoints : [
     {
       id: 'sion',
       name: 'Sion, Mumbai',
@@ -33,7 +37,7 @@ export function BoardDropPoint({ onContinue, selectedSeats }: BoardDropPointProp
     },
   ];
 
-  const droppingPoints = [
+  const droppingPoints = (bus?.droppingPoints && bus.droppingPoints.length > 0) ? bus.droppingPoints : [
     {
       id: 'pune-central',
       name: 'Pune Central',
